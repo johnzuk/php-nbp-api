@@ -29,5 +29,5 @@
   },
   "autoload-dev": {
     "psr-4": { "NBP\\Tests\\": "test/NBP/Tests/" }
-  },
+  }
 }
