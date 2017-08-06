@@ -1,8 +1,8 @@
 {
   "name": "john_zuk/php-nbp-api",
   "type": "library",
-  "description": "NBP API client",
-  "keywords": ["nbp", "api"],
+  "description": "NBP (Narodowy Bank Polski) API client",
+  "keywords": ["nbp", "api", "currency", "money"],
   "license": "MIT",
   "authors": [
     {

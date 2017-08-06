@@ -14,13 +14,10 @@ General API Usage
 -----------------
 
 ```php
-$client = \Gitlab\Client::create('http://git.yourdomain.com')
-    ->authenticate('your_gitlab_token_here', \Gitlab\Client::AUTH_URL_TOKEN)
-;
+$client = new \NBP\Client();
 
-$project = $client->api('projects')->create('My Project', array(
-  'description' => 'This is a project',
-  'issues_enabled' => false
-));
+$usd = $client->rates()->code('a', 'usd');
+
+echo $usd['rates'][0]['mid'];
 
 ```
