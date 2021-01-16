@@ -7,7 +7,7 @@ Installation
 Via [composer](https://getcomposer.org)
 
 ```bash
-composer require john_zuk/php-nbp-api php-http/guzzle6-adapter
+composer require john_zuk/php-nbp-api guzzlehttp/guzzle:^7.2 http-interop/http-factory-guzzle:^1.0
 ```
 
 General API Usage

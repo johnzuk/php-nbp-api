@@ -1,45 +1,51 @@
 <?php
 namespace NBP\Api;
 
-/**
- * Class GoldPrice
- * @package NBP\Api
- */
+use DateTimeImmutable;
+use NBP\Client;
+
 class GoldPrice extends AbstractApi
 {
-    /**
-     * @return array|string
-     */
-    public function price()
+    protected const PREFIX = 'cenyzlota';
+
+    public function price(): array
     {
-        return $this->get('cenyzlota');
+        return $this->get([
+            self::PREFIX,
+        ]);
     }
 
-    /**
-     * @param int $topCount
-     * @return array|string
-     */
-    public function last($topCount)
+    public function last(int $topCount): array
     {
-        return $this->get('cenyzlota/last/'.$topCount);
+        return $this->get([
+            self::PREFIX,
+            self::LAST,
+            $topCount,
+        ]);
     }
 
-    /**
-     * @param \DateTime $date
-     * @return array|string
-     */
-    public function date(\DateTime $date)
+    public function today(): array
     {
-        return $this->get('cenyzlota/'.$date->format("Y-m-d"));
+        return $this->get([
+            self::PREFIX,
+            self::TODAY,
+        ]);
     }
 
-    /**
-     * @param \DateTime $startDate
-     * @param \DateTime $endDate
-     * @return array|string
-     */
-    public function betweenDate(\DateTime $startDate, \DateTime $endDate)
+    public function date(DateTimeImmutable $date): array
     {
-        return $this->get('cenyzlota/'.$startDate->format("Y-m-d").'/'.$endDate->format('Y-m-d'));
+        return $this->get([
+            self::PREFIX,
+            $date->format(Client::DATE_FORMAT),
+        ]);
+    }
+
+    public function betweenDate(DateTimeImmutable $startDate, DateTimeImmutable $endDate): array
+    {
+        return $this->get([
+            self::PREFIX,
+            $startDate->format(Client::DATE_FORMAT),
+            $endDate->format(Client::DATE_FORMAT),
+        ]);
     }
 }

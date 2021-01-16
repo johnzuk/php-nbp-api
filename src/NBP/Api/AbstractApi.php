@@ -1,46 +1,30 @@
 <?php
 namespace NBP\Api;
 
-use Http\Discovery\StreamFactoryDiscovery;
-use Http\Message\StreamFactory;
 use NBP\Client;
 use NBP\HttpClient\Message\ResponseMediator;
 
-/**
- * Class AbstractApi
- * @package NBP\Api
- */
 class AbstractApi implements ApiInterface
 {
+    protected const LAST = 'last';
+    protected const TODAY = 'today';
+
+    private const REQUEST_DELIMITER = '/';
+    protected const PREFIX = '';
+
     /**
      * @var Client
      */
     protected $client;
 
-    /**
-     * @var StreamFactory
-     */
-    protected $streamFactory;
-
-    /**
-     * AbstractApi constructor.
-     * @param Client $client
-     * @param StreamFactory|null $streamFactory
-     */
-    public function __construct(Client $client, StreamFactory $streamFactory = null)
+    public function __construct(Client $client)
     {
         $this->client = $client;
-        $this->streamFactory = $streamFactory ?: StreamFactoryDiscovery::find();
     }
 
-    /**
-     * @param string $path
-     * @param array $requestHeaders
-     * @return array|string
-     */
-    public function get($path, $requestHeaders = [])
+    protected function get(array $params): array
     {
-        $response = $this->client->getHttpClient()->get($path, $requestHeaders);
+        $response = $this->client->getHttpClient()->get(implode(self::REQUEST_DELIMITER, $params));
 
         return ResponseMediator::getContent($response);
     }

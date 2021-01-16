@@ -1,62 +1,55 @@
 <?php
 namespace NBP\Api;
 
-/**
- * Class Tables
- * @package NBP\Api
- */
+use DateTimeImmutable;
+use NBP\Client;
+
 class Tables extends AbstractApi
 {
-    /**
-     * @param string $table
-     * @return array|string
-     */
-    public function table($table)
+    protected const PREFIX = 'exchangerates/tables';
+
+    public function table(string $table): array
     {
-        return $this->get('exchangerates/tables/'.$table.'/');
+        return $this->get([
+            self::PREFIX,
+            $table,
+        ]);
     }
 
-    /**
-     * @param string $table
-     * @param int $topCount
-     * @return array|string
-     */
-    public function last($table, $topCount)
+    public function last(string $table, int $topCount): array
     {
-        return $this->get('exchangerates/tables/'.$table.'/last/'.$topCount);
+        return $this->get([
+            self::PREFIX,
+            $table,
+            self::LAST,
+            $topCount,
+        ]);
     }
 
-    /**
-     * @param string $table
-     * @return array|string
-     */
-    public function today($table)
+    public function today(string $table): array
     {
-        return $this->get('exchangerates/tables/'.$table.'/today');
+        return $this->get([
+            self::PREFIX,
+             $table,
+            self::TODAY,
+        ]);
     }
 
-    /**
-     * @param string $table
-     * @param \DateTime $date
-     * @return array|string
-     */
-    public function date($table, \DateTime $date)
+    public function date(string $table, DateTimeImmutable $date): array
     {
-        return $this->get('exchangerates/tables/'.$table.'/'.$date->format('Y-m-d'));
+        return $this->get([
+            self::PREFIX,
+            $table,
+            $date->format(Client::DATE_FORMAT)
+        ]);
     }
 
-    /**
-     * @param string $table
-     * @param \DateTime $startDate
-     * @param \DateTime $endDate
-     * @return array|string
-     */
-    public function betweenDate($table, \DateTime $startDate, \DateTime $endDate)
+    public function betweenDate(string $table, DateTimeImmutable $startDate, DateTimeImmutable $endDate): array
     {
-        return $this->get(
-            'exchangerates/tables/'.$table.'/'.
-            $startDate->format('Y-m-d').'/'.
-            $endDate->format('Y-m-d')
-        );
+        return $this->get([
+            self::PREFIX . $table,
+            $startDate->format(Client::DATE_FORMAT),
+            $endDate->format(Client::DATE_FORMAT),
+        ]);
     }
 }

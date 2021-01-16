@@ -2,26 +2,24 @@
 namespace NBP\HttpClient;
 
 use Http\Client\Common\HttpMethodsClient;
+use Http\Client\Common\HttpMethodsClientInterface;
 use Http\Client\Common\Plugin;
 use Http\Client\Common\PluginClient;
 use Http\Client\HttpClient;
-use Http\Discovery\HttpClientDiscovery;
-use Http\Discovery\MessageFactoryDiscovery;
-use Http\Message\RequestFactory;
+use Http\Discovery\Psr17FactoryDiscovery;
+use Http\Discovery\Psr18ClientDiscovery;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 
-/**
- * Class Builder
- * @package NBP\HttpClient
- */
 class Builder
 {
     /**
-     * @var HttpClient
+     * @var ClientInterface
      */
     protected $httpClient;
 
     /**
-     * @var \Http\Message\MessageFactory
+     * @var RequestFactoryInterface
      */
     protected $requestFactory;
 
@@ -36,27 +34,19 @@ class Builder
     protected $plugins = [];
 
     /**
-     * @var HttpClient
+     * @var HttpMethodsClientInterface
      */
     protected $pluginClient;
 
-    /**
-     * Builder constructor.
-     * @param HttpClient|null $httpClient
-     * @param RequestFactory|null $requestFactory
-     */
     public function __construct(
         HttpClient $httpClient = null,
-        RequestFactory $requestFactory = null
+        RequestFactoryInterface $requestFactory = null
     ) {
-        $this->httpClient = $httpClient ?: HttpClientDiscovery::find();
-        $this->requestFactory = $requestFactory ?: MessageFactoryDiscovery::find();
+        $this->httpClient = $httpClient ?: Psr18ClientDiscovery::find();
+        $this->requestFactory = $requestFactory ?: Psr17FactoryDiscovery::findRequestFactory();
     }
 
-    /**
-     * @return HttpMethodsClient
-     */
-    public function getHttpClient()
+    public function getHttpClient(): HttpMethodsClientInterface
     {
         if ($this->httpClientModified) {
             $this->httpClientModified = false;
@@ -70,25 +60,9 @@ class Builder
         return $this->pluginClient;
     }
 
-    /**
-     * @param Plugin $plugin
-     */
-    public function addPlugin(Plugin $plugin)
+    public function addPlugin(Plugin $plugin): void
     {
         $this->plugins[] = $plugin;
         $this->httpClientModified = true;
-    }
-
-    /**
-     * @param string $className
-     */
-    public function removePlugin($className)
-    {
-        foreach ($this->plugins as $idx => $plugin) {
-            if ($plugin instanceof $className) {
-                unset($this->plugins[$idx]);
-                $this->httpClientModified = true;
-            }
-        }
     }
 }

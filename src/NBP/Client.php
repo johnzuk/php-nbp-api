@@ -1,11 +1,13 @@
 <?php
+
+declare(strict_types=1);
+
 namespace NBP;
 
-use Http\Client\Common\HttpMethodsClient;
+use Http\Client\Common\HttpMethodsClientInterface;
 use Http\Client\Common\Plugin\AddHostPlugin;
 use Http\Client\Common\Plugin\HeaderDefaultsPlugin;
-use Http\Client\HttpClient;
-use Http\Discovery\UriFactoryDiscovery;
+use Http\Discovery\Psr17FactoryDiscovery;
 use NBP\Api\GoldPrice;
 use NBP\Api\Rates;
 use NBP\Api\Tables;
@@ -13,103 +15,45 @@ use NBP\HttpClient\Builder;
 use NBP\HttpClient\Plugin\Api;
 use NBP\HttpClient\Plugin\NBPExceptionThrower;
 
-/**
- * Class Client
- * @package NBP
- */
 class Client
 {
+    public const DATE_FORMAT = 'Y-m-d';
+
+    private const API_URL = 'http://api.nbp.pl/';
+
     /**
      * @var Builder
      */
     protected $httpClientBuilder;
 
-    /**
-     * Client constructor.
-     * @param Builder|null $httpClientBuilder
-     */
     public function __construct(Builder $httpClientBuilder = null)
     {
         $this->httpClientBuilder = $httpClientBuilder ?: new Builder();
         $this->httpClientBuilder->addPlugin(new NBPExceptionThrower());
+        $this->httpClientBuilder->addPlugin(new AddHostPlugin(Psr17FactoryDiscovery::findUriFactory()->createUri(self::API_URL)));
         $this->httpClientBuilder->addPlugin(new Api());
         $this->httpClientBuilder->addPlugin(new HeaderDefaultsPlugin([
             'Accept' => 'application/json',
             'User-Agent' => 'nbp-api (https://github.com/johnzuk/php-nbp-api)',
         ]));
-
-        $this->setUrl('http://api.nbp.pl/');
     }
 
-    /**
-     * @param string $url
-     *
-     * @return $this
-     */
-    public function setUrl($url)
-    {
-        $this->httpClientBuilder->removePlugin(AddHostPlugin::class);
-        $this->httpClientBuilder->addPlugin(new AddHostPlugin(UriFactoryDiscovery::find()->createUri($url)));
-
-        return $this;
-    }
-
-    /**
-     * Create a Gitlab\Client using an url.
-     *
-     * @param string $url
-     *
-     * @return Client
-     */
-    public static function create($url)
-    {
-        $client = new self();
-        $client->setUrl($url);
-
-        return $client;
-    }
-
-    /**
-     * Create a Gitlab\Client using an HttpClient.
-     *
-     * @param HttpClient $httpClient
-     *
-     * @return Client
-     */
-    public static function createWithHttpClient(HttpClient $httpClient)
-    {
-        $builder = new Builder($httpClient);
-        return new self($builder);
-    }
-
-    /**
-     * @return HttpMethodsClient
-     */
-    public function getHttpClient()
+    public function getHttpClient(): HttpMethodsClientInterface
     {
         return $this->httpClientBuilder->getHttpClient();
     }
 
-    /**
-     * @return Tables
-     */
-    public function tables()
+    public function tables(): Tables
     {
         return new Tables($this);
     }
 
-    /**
-     * @return Rates
-     */
-    public function rates()
+    public function rates(): Rates
     {
         return new Rates($this);
     }
 
-    /**
-     * @return GoldPrice
-     */
-    public function goldPrice()
+    public function goldPrice(): GoldPrice
     {
         return new GoldPrice($this);
     }

@@ -2,24 +2,21 @@
 namespace NBP\HttpClient\Plugin;
 
 use Http\Client\Common\Plugin;
+use Http\Promise\Promise;
 use Psr\Http\Message\RequestInterface;
 
-/**
- * Class Api
- * @package NBP\HttpClient\Plugin
- */
 class Api implements Plugin
 {
-    CONST API = '/api/';
+    private CONST API = '/api/';
 
     /**
      * {@inheritdoc}
      */
-    public function handleRequest(RequestInterface $request, callable $next, callable $first)
+    public function handleRequest(RequestInterface $request, callable $next, callable $first): Promise
     {
         $uri = $request->getUri();
-        if (substr($uri->getPath(), 0, strlen(self::API)) !== self::API) {
-            $request = $request->withUri($uri->withPath(self::API.$uri->getPath()));
+        if (strpos($uri->getPath(), self::API) !== 0) {
+            $request = $request->withUri($uri->withPath(self::API . $uri->getPath()));
         }
 
         return $next($request);
