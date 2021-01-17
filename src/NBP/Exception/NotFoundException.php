@@ -1,6 +1,8 @@
 <?php
 namespace NBP\Exception;
 
-class NotFoundException extends \RuntimeException
+use RuntimeException;
+
+class NotFoundException extends RuntimeException
 {
 }

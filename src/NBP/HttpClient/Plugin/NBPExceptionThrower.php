@@ -3,7 +3,7 @@ namespace NBP\HttpClient\Plugin;
 
 use Http\Client\Common\Plugin;
 use Http\Promise\Promise;
-use NBP\Exception\BarRequestException;
+use NBP\Exception\BadRequestException;
 use NBP\Exception\NotFoundException;
 use NBP\Exception\TimeLimitExceededException;
 use Psr\Http\Message\RequestInterface;
@@ -17,7 +17,9 @@ class NBPExceptionThrower implements Plugin
     public function handleRequest(RequestInterface $request, callable $next, callable $first): Promise
     {
         return $next($request)->then(static function (ResponseInterface $response): ResponseInterface {
-            if ($response->getStatusCode() >= 400 && $response->getStatusCode() < 600) {
+            $statusCode = $response->getStatusCode();
+
+            if ($statusCode >= 400 && $statusCode < 600) {
                 $content = $response->getBody()->getContents();
 
                 if ($response->getStatusCode() === 400) {
@@ -25,7 +27,7 @@ class NBPExceptionThrower implements Plugin
                         throw new TimeLimitExceededException($content, 400);
                     }
 
-                    throw new BarRequestException($content, 400);
+                    throw new BadRequestException($content, 400);
                 }
 
                 if ($response->getStatusCode() === 404) {

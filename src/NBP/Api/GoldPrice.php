@@ -6,7 +6,7 @@ use NBP\Client;
 
 class GoldPrice extends AbstractApi
 {
-    protected const PREFIX = 'cenyzlota';
+    protected const PREFIX = '/cenyzlota';
 
     public function price(): array
     {

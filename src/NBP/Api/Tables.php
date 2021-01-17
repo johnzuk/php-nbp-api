@@ -6,7 +6,7 @@ use NBP\Client;
 
 class Tables extends AbstractApi
 {
-    protected const PREFIX = 'exchangerates/tables';
+    protected const PREFIX = '/exchangerates/tables';
 
     public function table(string $table): array
     {
@@ -47,7 +47,8 @@ class Tables extends AbstractApi
     public function betweenDate(string $table, DateTimeImmutable $startDate, DateTimeImmutable $endDate): array
     {
         return $this->get([
-            self::PREFIX . $table,
+            self::PREFIX,
+            $table,
             $startDate->format(Client::DATE_FORMAT),
             $endDate->format(Client::DATE_FORMAT),
         ]);

@@ -7,12 +7,13 @@ use NBP\Client;
 
 class Rates extends AbstractApi
 {
-    protected const PREFIX = 'exchangerates/rates';
+    protected const PREFIX = '/exchangerates/rates';
 
     public function code(string $table, string $code): array
     {
         return $this->get([
-            self::PREFIX.$table,
+            self::PREFIX,
+            $table,
             $code,
         ]);
     }
@@ -55,7 +56,8 @@ class Rates extends AbstractApi
         DateTimeImmutable $endDate
     ): array {
         return $this->get([
-            self::PREFIX.$table,
+            self::PREFIX,
+            $table,
             $code,
             $startDate->format(Client::DATE_FORMAT),
             $endDate->format(Client::DATE_FORMAT),
