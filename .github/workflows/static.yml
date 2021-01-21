@@ -5,14 +5,14 @@ on:
   pull_request:
 
 jobs:
-  composer-validate:
-    name: Composer Validate
-    runs-on: ubuntu-latest
-    steps:
-      - name: Validate dependencies
-        uses: php-actions/composer@v5
-        with:
-          command: validate --strict
+#  composer-validate:
+#    name: Composer Validate
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Validate dependencies
+#        uses: php-actions/composer@v5
+#        with:
+#          command: validate --strict
 
   phpstan:
     name: PHPStan
