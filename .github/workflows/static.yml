@@ -40,4 +40,4 @@ jobs:
           command: composer install --no-interaction --no-progress
 
       - name: Execute PHPStan
-        run: vendor/bin/phpstan analyze --no-progress
+        run: vendor/bin/phpstan analyze --no-progress src/
